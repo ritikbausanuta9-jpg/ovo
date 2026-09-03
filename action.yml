@@ -156,7 +156,14 @@ runs:
       working-directory: android-kernel
       run: |
         repo status
-        rm common/android/abi_gki_protected_exports_* || echo "No protected exports!"
+        if ls common/android/abi_gki_protected_exports_* 1> /dev/null 2>&1; then
+        for f in common/android/abi_gki_protected_exports_*; do
+        echo "" > "$f"
+        done
+        echo "Cleared protected exports content (kept files for Bazel)"
+        else
+        echo "No protected exports!"
+           fi
         git config --global user.email "bot@github.actions.org"
         git config --global user.name "github.actions"
         cd common/ && git add -A && git commit -a -m "Add Kernel Module"
